@@ -1,7 +1,15 @@
 async function loadProducts() {
-  const response = await fetch("https://fakestoreapi.com/products");
-  const products = await response.json();
-  displayProducts(products);
+  try {
+    const response = await fetch("https://fakestoreapi.com/products");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const products = await response.json();
+    displayProducts(products);
+  } catch (error) {
+    console.error('Failed to load products:', error);
+    showErrorMessage();
+  }
 }
 
 function displayProducts(products) {
@@ -57,6 +65,15 @@ function displayProducts(products) {
     // Append the new product element to the container
     container.appendChild(productElement);
   });
+}
+
+function showErrorMessage() {
+  const container = document.querySelector("#all-products .container");
+  container.innerHTML = `
+    <div style="text-align: center; padding: 40px; color: #666;">
+      <p>Unable to load products. Please try again later.</p>
+    </div>
+  `;
 }
 
 loadProducts();
